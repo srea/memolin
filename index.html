@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メモリン(Memolin) - Discord会議の議事録を自動作成</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --discord-blurple: #5865F2;
+            --discord-green: #57F287;
+            --discord-light: #FFFFFF;
+            --discord-dark: #23272A;
+            --discord-darker: #1E2124;
+            --discord-gray: #99AAB5;
+            --discord-light-gray: #E3E5E8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: var(--discord-light);
+            background: linear-gradient(135deg, #36393F 0%, #2F3136 100%);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: rgba(30, 33, 36, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--discord-light);
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--discord-blurple);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: var(--discord-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+        
+        nav ul li a:hover {
+            color: var(--discord-light);
+        }
+        
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .mobile-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--discord-light);
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+        
+        .hero {
+            padding: 150px 0 100px;
+            background: radial-gradient(circle at top right, rgba(114, 137, 218, 0.3), transparent 70%),
+                        radial-gradient(circle at bottom left, rgba(87, 242, 135, 0.2), transparent 70%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(88, 101, 242, 0.1);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+            z-index: -1;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: rgba(87, 242, 135, 0.1);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+            z-index: -1;
+            animation: float 20s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+        
+        .hero-text {
+            flex: 1;
+        }
+        
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+        
+        .hero-image img, .hero-image video {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(90deg, var(--discord-blurple), var(--discord-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-description {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--discord-light-gray);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .button-primary {
+            background-color: var(--discord-blurple);
+            color: white;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+        }
+        
+        .button-primary:hover {
+            background-color: #4752c4;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(88, 101, 242, 0.5);
+        }
+        
+        .button-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--discord-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .button-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .button-icon {
+            margin-right: 8px;
+        }
+        
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--discord-light);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--discord-blurple), var(--discord-green));
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: var(--discord-gray);
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features {
+            background-color: rgba(35, 39, 42, 0.6);
+            position: relative;
+        }
+        
+        .feature-card {
+            background: linear-gradient(145deg, rgba(47, 49, 54, 0.6), rgba(54, 57, 63, 0.6));
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--discord-blurple), var(--discord-green));
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            background: rgba(88, 101, 242, 0.2);
+            color: var(--discord-blurple);
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--discord-light);
+        }
+        
+        .feature-card p {
+            color: var(--discord-gray);
+            margin-bottom: 15px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .how-it-works {
+            background-color: rgba(30, 33, 36, 0.6);
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--discord-blurple), var(--discord-green));
+            z-index: 0;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            width: 25%;
+            padding: 0 15px;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--discord-blurple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(88, 101, 242, 0.5);
+        }
+        
+        .step h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .step p {
+            font-size: 14px;
+            color: var(--discord-gray);
+        }
+        
+        .pricing {
+            background-color: rgba(35, 39, 42, 0.6);
+        }
+        
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: linear-gradient(145deg, rgba(47, 49, 54, 0.8), rgba(54, 57, 63, 0.8));
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card.featured {
+            transform: scale(1.05);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+        }
+        
+        .pricing-card.featured::before {
+            content: "おすすめ";
+            position: absolute;
+            top: 10px;
+            right: -25px;
+            background: var(--discord-blurple);
+            color: white;
+            padding: 5px 30px;
+            font-size: 12px;
+            transform: rotate(45deg);
+            font-weight: 700;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .pricing-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--discord-light);
+        }
+        
+        .pricing-price {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--discord-light);
+        }
+        
+        .pricing-price span {
+            font-size: 16px;
+            color: var(--discord-gray);
+            font-weight: 400;
+        }
+        
+        .pricing-description {
+            color: var(--discord-gray);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .pricing-features li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            color: var(--discord-light-gray);
+            font-size: 14px;
+        }
+        
+        .pricing-features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--discord-green);
+            font-weight: 700;
+        }
+        
+        .pricing-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: rgba(87, 242, 135, 0.2);
+            color: var(--discord-green);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .coming-soon {
+            background-color: rgba(153, 170, 181, 0.2);
+            color: var(--discord-gray);
+        }
+        
+        .faq {
+            background-color: rgba(30, 33, 36, 0.6);
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            background: linear-gradient(145deg, rgba(47, 49, 54, 0.6), rgba(54, 57, 63, 0.6));
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            font-size: 22px;
+            transition: transform 0.3s;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: var(--discord-gray);
+        }
+        
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding: 0 20px 20px;
+        }
+        
+        .cta {
+            background: radial-gradient(circle at center, rgba(88, 101, 242, 0.2), transparent 70%);
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .cta p {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: var(--discord-gray);
+        }
+        
+        footer {
+            background-color: var(--discord-darker);
+            color: var(--discord-gray);
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--discord-light);
+            margin-bottom: 15px;
+        }
+        
+        .footer-description {
+            margin-bottom: 20px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--discord-light);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--discord-blurple);
+            transform: translateY(-3px);
+        }
+        
+        .footer-links h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--discord-light);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links ul li a {
+            color: var(--discord-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links ul li a:hover {
+            color: var(--discord-light);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* レスポンシブデザイン */
+        @media screen and (max-width: 992px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pricing-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pricing-card.featured {
+                grid-column: span 2;
+                margin-bottom: 30px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+            
+            .hero-content {
+                flex-direction: column-reverse;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            nav {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--discord-darker);
+                padding: 0;
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: clip-path 0.4s ease-in-out;
+                z-index: 100;
+            }
+            
+            nav.active {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+            
+            nav ul {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            nav ul li {
+                margin: 10px 0;
+            }
+            
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .steps::before {
+                display: none;
+            }
+            
+            .step {
+                width: 100%;
+                margin-bottom: 40px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.featured {
+                grid-column: span 1;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="logo">
+                    <div class="logo-icon">M</div>
+                    Memolin
+                </a>
+                <div class="mobile-menu">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#features">機能</a></li>
+                        <li><a href="#how-it-works">使い方</a></li>
+                        <li><a href="#pricing">料金プラン</a></li>
+                        <li><a href="#faq">よくある質問</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Discord会議の<br>議事録を自動作成</h1>
+                    <p class="hero-description">メモリン（Memolin）はDiscordボイスチャットでの会議を自動で議事録化。会議後すぐに共有可能な文字起こしと要約を提供します。SlackからもDiscordの会議を操作できる未来的な議事録ボットです。</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="button button-primary">
+                            <span class="button-icon">+</span>
+                            Discordに追加する
+                        </a>
+                        <a href="#features" class="button button-secondary">機能を見る</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <video autoplay loop muted>
+                        <source src="/api/placeholder/540/300" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div> 
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>主な機能</h2>
+                <p>メモリンは会議の内容を正確に記録し、チームのコミュニケーションを円滑にします</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>高精度な文字起こし</h3>
+                    <p>最新の音声認識技術を使用し、複数話者の声を区別して高精度に文字起こしします。日本語はもちろん、多言語対応で国際的なチームにも対応。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>AI要約機能</h3>
+                    <p>長時間の会議も要点を自動抽出。重要ポイント、決定事項、アクションアイテムを自動でまとめ、素早く内容を把握できます。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Slack連携</h3>
+                    <p>Slackから直接Discordの会議を開始・管理。会議終了後は自動的にSlackチャンネルに議事録を共有し、ワークフローをシームレスに。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>カスタマイズ可能</h3>
+                    <p>文字起こしモデルの選択や精度設定、出力フォーマットなど細かな設定が可能。チームのニーズに合わせて最適化できます。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>会議分析</h3>
+                    <p>誰がどれくらい発言したか、頻出トピックは何かなど、会議の傾向を可視化。より効率的なミーティング運営をサポートします。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>プライバシー保護</h3>
+                    <p>エンドツーエンドの暗号化で会議内容を保護。センシティブな情報も安心して共有できる環境を提供します。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>使い方</h2>
+                <p>シンプルな4ステップで、すぐに議事録作成を始められます</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>ボットを追加</h3>
+                    <p>Discordサーバーにメモリンを招待します</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>会議を開始</h3>
+                    <p>ボイスチャンネルで「!memo start」と入力</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>会議を実施</h3>
+                    <p>通常通り会議を行います</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>議事録を取得</h3>
+                    <p>会議終了後に自動で議事録が生成されます</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-title">
+                <h2>料金プラン</h2>
+                <p>あなたのチームのニーズに合わせたプランをご用意</p>
+            </div>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <div class="pricing-badge">無料</div>
+                    <div class="pricing-name">Free</div>
+                    <div class="pricing-price">¥0 <span>/ 月</span></div>
+                    <p class="pricing-description">小規模チームやテスト利用に最適</p>
+                    <ul class="pricing-features">
+                        <li>月5時間まで文字起こし</li>
+                        <li>基本的な要約機能</li>
+                        <li>テキスト形式のエクスポート</li>
+                        <li>7日間のデータ保存</li>
+                        <li>コミュニティサポート</li>
+                    </ul>
+                    <a href="#" class="button button-primary">今すぐ始める</a>
+                </div>
+    
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">人気</div>
+                    <div class="pricing-name">Pro</div>
+                    <div class="pricing-price">¥2,980 <span>/ 月</span></div>
+                    <p class="pricing-description">中小規模のチームに最適</p>
+                    <ul class="pricing-features">
+                        <li>月30時間の文字起こし</li>
+                        <li>高度なAI要約機能</li>
+                        <li>複数形式のエクスポート</li>
+                        <li>30日間のデータ保存</li>
+                        <li>Slack連携</li>
+                        <li>優先サポート</li>
+                    </ul>
+                    <a href="#" class="button button-primary">準備中</a>
+                </div>
+    
+                <div class="pricing-card">
+                    <div class="pricing-badge coming-soon">近日公開</div>
+                    <div class="pricing-name">Enterprise</div>
+                    <div class="pricing-price">お問い合わせ</div>
+                    <p class="pricing-description">大規模組織向けカスタムプラン</p>
+                    <ul class="pricing-features">
+                        <li>無制限の文字起こし</li>
+                        <li>カスタムAI要約テンプレート</li>
+                        <li>API連携</li>
+                        <li>無制限のデータ保存</li>
+                        <li>高度なデータ分析</li>
+                        <li>専任サポート担当者</li>
+                        <li>SLA保証</li>
+                    </ul>
+                    <a href="#" class="button button-secondary">お問い合わせ</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-title">
+                <h2>よくある質問</h2>
+                <p>メモリンについてのよくある質問と回答</p>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">文字起こしの精度はどれくらいですか？</div>
+                    <div class="faq-answer">
+                        メモリンは最新の音声認識技術を採用しており、クリアな音声環境では95%以上の精度を実現しています。話者の声質、アクセント、背景ノイズによって精度は変動する場合があります。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">会議の録音データはどこに保存されますか？</div>
+                    <div class="faq-answer">
+                        会議の音声データはエンドツーエンド暗号化されセキュアなクラウドストレージに一時的に保存され、文字起こし完了後にはプランに応じた期間保存されます。Free プランでは7日間、Pro プランでは30日間保存されます。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">同時に複数の会議を録音できますか？</div>
+                    <div class="faq-answer">
+                        はい、メモリンは同時に複数のボイスチャンネルで会議を録音できます。サーバー内の異なるボイスチャンネルでそれぞれ録音コマンドを実行するだけです。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Slack以外の外部サービスとの連携は可能ですか？</div>
+                    <div class="faq-answer">
+                        現在はSlack連携のみ提供していますが、今後Notion、Google Workspace、Microsoft Teamsなどの主要サービスとの連携も計画しています。Enterprise プランではカスタムAPI連携も可能です。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">日本語以外の言語も対応していますか？</div>
+                    <div class="faq-answer">
+                        はい、メモリンは日本語の他、英語、中国語、韓国語など20以上の言語に対応しています。会議中に複数の言語が使用された場合も、それぞれの言語を認識して文字起こしを行います。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>メモリンを今すぐ試してみませんか？</h2>
+            <p>無料プランで簡単に始められます。会議の議事録作成を自動化し、チームの生産性を向上させましょう。</p>
+            <div class="cta-buttons">
+                <a href="#" class="button button-primary">
+                    <span class="button-icon">+</span>
+                    Discordに追加する
+                </a>
+                <a href="#pricing" class="button button-secondary">料金プランを見る</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="footer-logo">
+                        <div class="logo-icon">M</div>
+                        メモリン
+                    </div>
+                    <p class="footer-description">
+                        メモリン（Memolin）はDiscordの会議を自動で文字起こし・要約するボットです。
+                        会議の効率化とナレッジ共有をサポートします。
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">X</a>
+                        <a href="#" class="social-link">G</a>
+                        <a href="#" class="social-link">D</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>製品</h3>
+                    <ul>
+                        <li><a href="#features">機能</a></li>
+                        <li><a href="#pricing">料金プラン</a></li>
+                        <li><a href="#">ロードマップ</a></li>
+                        <li><a href="#">リリースノート</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>サポート</h3>
+                    <ul>
+                        <li><a href="#">ヘルプセンター</a></li>
+                        <li><a href="#">APIドキュメント</a></li>
+                        <li><a href="#">コミュニティ</a></li>
+                        <li><a href="#">ステータス</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>会社</h3>
+                    <ul>
+                        <li><a href="#">運営会社</a></li>
+                        <li><a href="#">ブログ</a></li>
+                        <li><a href="#">採用情報</a></li>
+                        <li><a href="#">お問い合わせ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Memolin. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // モバイルメニューの切り替え
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const nav = document.querySelector('nav');
+        
+        mobileMenu.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // スムーススクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // モバイルメニューが開いていれば閉じる
+                    nav.classList.remove('active');
+                }
+            });
+        });
+        
+        // FAQの切り替え
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
