@@ -15,7 +15,7 @@
         <div class="container">
             <div class="header-inner">
                 <a href="#" class="logo">
-                    <div class="logo-icon">M</div>
+                    <!-- <div class="logo-icon">M</div> -->
                     Memolin
                 </a>
                 <div class="mobile-menu">
@@ -31,6 +31,7 @@
                         <li><a href="#pricing">Pricing</a></li>
                         <li><a href="#pricing-compare">Compare</a></li>
                         <li><a href="#faq">FAQ</a></li>
+                        <li><a href="https://memolin.minipro.co/">Login</a></li>
                         <li class="lang-switch">
                             <a href="index.html">JP</a>
                             <span class="lang-divider">/</span>
@@ -46,25 +47,34 @@
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                <div class="hero-text">
-                    <h1>Automatic Recording & Summarization<br>for Discord Audio</h1>
-                    <p class="hero-description">Memolin automatically creates minutes for Discord voice chat meetings. Get shareable transcripts and summaries immediately after meetings. Control Discord meetings from Slack with this futuristic minute-taking bot.</p>
-                    <div class="cta-buttons">
-                        <a href="https://discord.com/oauth2/authorize?client_id=1351947901382955144" class="button button-primary">
-                            <span class="button-icon">+</span>
-                            Add to Discord
-                        </a>
-                        <a href="#features" class="button button-secondary">View Features</a>
+                    <div class="hero-text">
+                        <h1>Automatic Recording & Summarization<br>for Discord Audio</h1>
+                        <p class="hero-description">Memolin automatically creates minutes for Discord voice chat meetings. Get shareable transcripts and summaries immediately after meetings. Control Discord meetings from Slack with this futuristic minute-taking bot.</p>
+                        <div class="cta-buttons">
+                            <a href="https://discord.com/oauth2/authorize?client_id=1351947901382955144" class="button button-primary">
+                                <span class="button-icon">+</span>
+                                Add to Discord
+                            </a>
+                            <a href="#features" class="button button-secondary">View Features</a>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <video autoplay loop muted>
+                            <source src="/api/placeholder/540/300" type="video/mp4">
+                            Introduction video for Memolin, which automatically records and summarizes Discord meetings.
+                        </video>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <video autoplay loop muted>
-                        <source src="/api/placeholder/540/300" type="video/mp4">
-                        Introduction video for Memolin, which automatically records and summarizes Discord meetings.
-                    </video>
+                <div class="pre-release-caution" style="background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; margin-top: 20px; border-radius: 5px; color: #856404;">
+                <h3 style="margin-top: 0; font-weight: bold;">【⚠️ Coming Soon! Limited Pre-Release Announcement】</h3>
+                <p>We will soon be launching a <strong>limited quantity pre-release</strong> of Memolin!</p>
+                <p><strong>【Important】</strong>During the pre-release period, as the service is under development, there is a possibility that the <strong>service may become unstable or data may be deleted without notice</strong>. Please be aware of this.</p>
+                <p>We are looking for <strong>Discord server owners who can actively provide feedback</strong> for product improvement during this valuable opportunity. Won't you help us build the future of Memolin?</p>
+                <p style="margin-bottom: 0;">If you are interested, please join our official Discord server!</p>
+                <!-- TODO: Insert Discord invite link later -->
+                <!-- <a href="YOUR_DISCORD_INVITE_LINK" class="button" style="background-color: #ffc107; color: #212529; border: none; margin-top: 10px;">Join Discord Server</a> -->
                 </div>
             </div>
-        </div> 
     </section>
 
     <section class="use-cases" id="use-cases">
@@ -166,7 +176,7 @@
                     <p class="step-description">"When the meeting ends, enter <code>/memolin-leave</code>. I'll immediately create the transcript and summary and send it to the text channel!"</p>
                 </div>
             </div>
-        </div> 
+        </div>
     </section>
 
     <section class="pricing" id="pricing">
@@ -194,7 +204,7 @@
                 <div class="pricing-card featured">
                     <div class="pricing-badge">Popular</div>
                     <div class="pricing-name">Pro</div>
-                    <div class="pricing-price">$29.80 <span>/ month</span></div>
+                    <div class="pricing-price">$4 <span>/ month</span></div>
                     <p class="pricing-description">Perfect for small to medium teams</p>
                     <ul class="pricing-features">
                         <li>30 hours transcription/month</li>
@@ -253,8 +263,8 @@
                         </tr>
                         <tr>
                             <td>AI Summary Function</td>
-                            <td>Basic<br><span class="table-hint">GPT-4o Mini</span></td>
-                            <td>Advanced<br><span class="table-hint">GPT-4o / Gemini</span></td>
+                            <td>Basic<br><span class="table-hint">GPT-4o Mini / Whisper-1</span></td>
+                            <td>Advanced<br><span class="table-hint">GPT-4o / gpt-4o-mini-transcribe</span></td>
                             <td>Custom<br><span class="table-hint">Company specific format</span></td>
                         </tr>
                         <tr>
