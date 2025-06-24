@@ -4,6 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メモリン(Memolin) - Discord会議の議事録を自動作成</title>
+    <meta name="description" content="メモリンはDiscordボイスチャットでの会議を自動で議事録化。AIによる高精度文字起こしと要約で、チームの生産性を向上。Slack連携で効率的なワークフローを実現します。">
+    <meta name="keywords" content="Discord,議事録,文字起こし,AI要約,会議録画,Slack連携,音声認識,ボイスチャット">
+    <meta name="author" content="Memolin">
+    <link rel="canonical" href="https://memolin.app/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://memolin.app/">
+    <meta property="og:title" content="メモリン(Memolin) - Discord会議の議事録を自動作成">
+    <meta property="og:description" content="メモリンはDiscordボイスチャットでの会議を自動で議事録化。AIによる高精度文字起こしと要約で、チームの生産性を向上。Slack連携で効率的なワークフローを実現します。">
+    <meta property="og:image" content="https://memolin.app/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:site_name" content="Memolin">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://memolin.app/">
+    <meta property="twitter:title" content="メモリン(Memolin) - Discord会議の議事録を自動作成">
+    <meta property="twitter:description" content="メモリンはDiscordボイスチャットでの会議を自動で議事録化。AIによる高精度文字起こしと要約で、チームの生産性を向上。Slack連携で効率的なワークフローを実現します。">
+    <meta property="twitter:image" content="https://memolin.app/assets/og-image.png">
+    <meta property="twitter:site" content="@memolin_app">
+    <meta property="twitter:creator" content="@memolin_app">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -17,13 +41,83 @@
 
     gtag('config', 'G-QP14QQK4D8');
     </script>
+    
+    <!-- JSON-LD構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": "https://memolin.app/#organization",
+                "name": "Memolin",
+                "url": "https://memolin.app/",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://memolin.app/assets/logo.png"
+                },
+                "sameAs": [
+                    "https://x.com/memolin_app",
+                    "https://discord.gg/t3CSARqb",
+                    "https://github.com/srea/"
+                ]
+            },
+            {
+                "@type": "SoftwareApplication",
+                "@id": "https://memolin.app/#software",
+                "name": "Memolin",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "Discord",
+                "description": "メモリンはDiscordボイスチャットでの会議を自動で議事録化。AIによる高精度文字起こしと要約で、チームの生産性を向上。",
+                "offers": [
+                    {
+                        "@type": "Offer",
+                        "name": "Free Plan",
+                        "price": "0",
+                        "priceCurrency": "JPY"
+                    },
+                    {
+                        "@type": "Offer",
+                        "name": "Pro Plan",
+                        "price": "500",
+                        "priceCurrency": "JPY"
+                    }
+                ],
+                "publisher": {
+                    "@id": "https://memolin.app/#organization"
+                }
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "文字起こしの精度はどれくらいですか？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "メモリンは最新の音声認識技術を採用しており、クリアな音声環境では95%以上の精度を実現しています。"
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "会議の録音データはどこに保存されますか？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "会議の音声データはエンドツーエンド暗号化されセキュアなクラウドストレージに一時的に保存されます。"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
 </head>
 <body>
     <header>
         <div class="container">
             <div class="header-inner">
                 <a href="#" class="logo">
-                    <img src="./assets/logo.png" alt="Memolin Logo" style="height: 40px; width: 40px; margin-right: 8px; vertical-align: middle;">
+                    <img src="./assets/logo.png" alt="Memolin - Discord会議議事録自動作成ボットのロゴ" loading="lazy" style="height: 40px; width: 40px; margin-right: 8px; vertical-align: middle;">
                     Memolin
                 </a>
                 <div class="mobile-menu">
@@ -67,7 +161,7 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <video autoplay loop muted controls>
+                    <video autoplay loop muted controls loading="lazy" poster="./assets/memolin_thumbnail_ja.jpg">
                         <source src="./assets/memolin_introduction_ja.webm" type="video/webm">
                         <source src="./assets/memolin_introduction_ja.mp4" type="video/mp4">
                         Discordでの会議を自動で録音・要約するメモリンの紹介動画です。
@@ -473,5 +567,39 @@
     </main>
 
     <script src="script.js" defer></script>
+    
+    <!-- パフォーマンス最適化スクリプト -->
+    <script>
+    // Lazy loading for older browsers
+    if ('IntersectionObserver' in window) {
+        const lazyImages = document.querySelectorAll('img[loading="lazy"], video[loading="lazy"]');
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    observer.unobserve(img);
+                }
+            });
+        });
+        lazyImages.forEach(img => imageObserver.observe(img));
+    }
+    
+    // Preload critical resources
+    const criticalResources = [
+        './assets/logo.png',
+        './style.css'
+    ];
+    criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'image';
+        document.head.appendChild(link);
+    });
+    </script>
 </body>
 </html>
