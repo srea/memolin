@@ -72,6 +72,22 @@
     --discord-darker: #1E2124fa;
 }
 
+/* アクセシビリティ向上 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus indicators */
+.button:focus,
+nav a:focus {
+    outline: 2px solid var(--brand-blurple);
+    outline-offset: 2px;
+}
+
 /* Light Theme Variables */
 @media (prefers-color-scheme: light) {
     :root {
@@ -366,6 +382,28 @@ h1 {
 
 section {
     padding: 80px 0;
+    position: relative;
+}
+
+section:nth-child(even) {
+    background-color: var(--bg-section-even);
+}
+
+section:nth-child(odd) {
+    background-color: var(--bg-section-odd);
+}
+
+/* セクション間の境界線 */
+section:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--brand-blurple), transparent);
+    opacity: 0.3;
 }
 
 .section-title {
@@ -425,6 +463,11 @@ section {
     box-shadow: var(--shadow-card-hover);
 }
 
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: linear-gradient(45deg, var(--brand-blurple), var(--brand-green));
+}
+
 .feature-card::before {
     content: '';
     position: absolute;
@@ -446,7 +489,7 @@ section {
     font-size: 28px;
     background: var(--bg-icon);
     color: var(--brand-blurple); /* Keep brand color */
-    transition: background-color 0.3s, color 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .feature-card h3 {
@@ -477,6 +520,439 @@ section {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */
     gap: 30px;
+}
+
+/* Characters Section */
+.characters {
+    background-color: var(--bg-section-even);
+    transition: background-color 0.3s;
+}
+
+.characters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.character-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s, border 0.3s;
+    border: var(--border-card);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.character-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.character-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--gradient-card-before);
+}
+
+.memolin-card::before {
+    background: linear-gradient(90deg, var(--brand-blurple), #7289da);
+}
+
+.recorin-card::before {
+    background: linear-gradient(90deg, var(--brand-green), #43b883);
+}
+
+.character-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.character-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-right: 20px;
+    background: var(--bg-icon);
+    box-shadow: var(--shadow-step-icon);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+}
+
+.character-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.memolin-card .character-avatar {
+    background: var(--bg-icon-memolin);
+    color: var(--brand-blurple);
+}
+
+.recorin-card .character-avatar {
+    background: var(--bg-icon-recorin);
+    color: var(--brand-green);
+}
+
+.character-info h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text-heading);
+}
+
+.character-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-left: 8px;
+}
+
+.character-role {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin: 0;
+}
+
+.character-description p {
+    color: var(--text-tertiary);
+    margin-bottom: 20px;
+    font-style: italic;
+    padding: 15px;
+    background: var(--bg-step-description);
+    border-radius: 10px;
+    border-left: 4px solid var(--brand-blurple);
+}
+
+.recorin-card .character-description p {
+    border-left: 4px solid var(--brand-green);
+}
+
+.character-skills {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.character-skills li {
+    margin-bottom: 12px;
+    padding-left: 0;
+    color: var(--text-tertiary);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.character-skills li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--brand-blurple);
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.recorin-card .character-skills li::before {
+    background: var(--brand-green);
+}
+
+.character-personality {
+    padding: 15px;
+    background: var(--bg-step-description);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border: var(--border-card);
+}
+
+.character-personality strong {
+    color: var(--text-primary);
+}
+
+.teamwork-showcase {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+    border: var(--border-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.teamwork-showcase::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--brand-blurple), var(--brand-green));
+}
+
+.teamwork-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 25px;
+}
+
+.pair-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, var(--bg-icon-memolin), var(--bg-icon-recorin));
+    box-shadow: var(--shadow-step-icon);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.pair-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.pair-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.teamwork-text {
+    text-align: left;
+    flex: 1;
+}
+
+.teamwork-content h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-heading);
+}
+
+.teamwork-content p {
+    color: var(--text-tertiary);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.workflow-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 700px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.workflow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 120px;
+    padding: 15px 10px;
+    background: var(--bg-step-description);
+    border-radius: 12px;
+    border: var(--border-card);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.workflow-step:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-step-description);
+}
+
+.step-number {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--brand-blurple), var(--brand-green));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: white;
+    box-shadow: var(--shadow-step-number);
+}
+
+.step-content {
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.workflow-arrow {
+    font-size: 20px;
+    color: var(--text-secondary);
+    font-weight: bold;
+    margin: 0 5px;
+    flex-shrink: 0;
+}
+
+/* キャラクター紹介後のCTA */
+.characters-cta {
+    text-align: center;
+    margin-top: 50px;
+    padding: 30px;
+    background: linear-gradient(135deg, var(--bg-hero-gradient-1), var(--bg-hero-gradient-2));
+    border-radius: 20px;
+    border: var(--border-card);
+}
+
+.characters-cta p {
+    color: var(--text-tertiary);
+    font-size: 16px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.characters-cta .button {
+    font-size: 18px;
+    padding: 15px 30px;
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0% { box-shadow: var(--shadow-button-primary); }
+    50% { box-shadow: var(--shadow-button-primary-hover), 0 0 20px rgba(88, 101, 242, 0.3); }
+    100% { box-shadow: var(--shadow-button-primary); }
+}
+
+/* 詳細ガイドセクション */
+.detailed-guide {
+    margin-top: 60px;
+    padding: 40px;
+    background: var(--bg-card);
+    border-radius: 20px;
+    border: var(--border-card);
+    box-shadow: var(--shadow-card);
+}
+
+.detailed-guide h3 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: var(--text-heading);
+}
+
+.guide-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.guide-item {
+    background: var(--bg-step-description);
+    border-radius: 15px;
+    padding: 25px;
+    border: var(--border-card);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.guide-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-step-description);
+}
+
+.guide-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--bg-icon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: var(--brand-blurple);
+}
+
+.guide-item h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--text-heading);
+}
+
+.guide-item ul {
+    list-style: none;
+    padding: 0;
+}
+
+.guide-item li {
+    margin-bottom: 8px;
+    color: var(--text-tertiary);
+    font-size: 14px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.guide-item li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--brand-blurple);
+    font-weight: bold;
+}
+
+.guide-item code {
+    background: var(--bg-code);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: var(--text-code);
+    font-weight: 600;
+}
+
+.guide-item a {
+    color: var(--brand-blurple);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.guide-item a:hover {
+    color: var(--brand-green);
+    text-decoration: underline;
+}
+
+.step-description a {
+    color: var(--brand-blurple);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.step-description a:hover {
+    color: var(--brand-green);
+    text-decoration: underline;
 }
 
 .how-it-works {
@@ -570,6 +1046,21 @@ section {
 .step-icon.recorin {
     background-color: var(--bg-icon-recorin);
     color: var(--brand-green); /* Keep brand color */
+}
+
+.step-icon.setup {
+    background-color: rgba(88, 101, 242, 0.1);
+    color: var(--brand-blurple);
+}
+
+.step-icon.recording {
+    background-color: rgba(87, 242, 135, 0.1);
+    color: var(--brand-green);
+}
+
+.step-icon.complete {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
 }
 
 .step-description {
@@ -1082,6 +1573,35 @@ footer {
 
     .use-cases-grid {
         grid-template-columns: 1fr; /* Stack to 1 column on smaller screens */
+    }
+
+    .characters-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .workflow-steps {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .workflow-arrow {
+        transform: rotate(90deg);
+        margin: 10px 0;
+    }
+
+    .teamwork-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .teamwork-text {
+        text-align: center;
+    }
+
+    .guide-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
     
     .pricing-cards {
