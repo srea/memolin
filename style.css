@@ -376,6 +376,19 @@ h1 {
     transform: translateY(-2px);
 }
 
+.button-try {
+    background: linear-gradient(135deg, #4eb069 0%, #3ba55c 100%);
+    color: #FFFFFF;
+    box-shadow: 0 4px 15px rgba(78, 176, 105, 0.4);
+    border: none;
+}
+
+.button-try:hover {
+    background: linear-gradient(135deg, #3ba55c 0%, #2d8a47 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(78, 176, 105, 0.5);
+}
+
 .button-icon {
     margin-right: 8px;
 }
